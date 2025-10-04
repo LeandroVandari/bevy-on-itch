@@ -1,0 +1,374 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Running a Bevy game on Itch.io</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Running a Bevy game on Itch.io</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>This book is meant as a step-by-step tutorial to prepare a Bevy game to run on itch.io.</p>
+<p>This is <strong>not</strong> a tutorial on how to make a Bevy game, or how to upload a game to itch.io. The main goal of this tutorial is to allow game developers to quickly adapt their games to be able to run on the web interface of itch.io (e.g. for game jams).</p>
+<p>I will provide a nice set of defaults that will allow for a quick adaptation, but specific use cases may not be covered (if you find one of those, please open an issue).</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="compiling-to-wasm"><a class="header" href="#compiling-to-wasm">Compiling to WASM</a></h1>
+<p>The first step in making a Bevy game web-compatible is being able to compile your game to WASM. That will allow you to distribute your code to multiple platforms, and let it be runnable by browsers of all kinds.</p>
+<ul>
+<li><a href="./wasm_target.html">Adding the <code>wasm32-unknown-unknown</code> target</a> will allow you to compile your game to WASM (which is essential to running on the web)</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="adding-the-wasm32-unknown-unknown-target"><a class="header" href="#adding-the-wasm32-unknown-unknown-target">Adding the <code>wasm32-unknown-unknown</code> target</a></h1>
+<p>In order to compile your game to WASM, you need to add the <code>wasm32-unknown-unknown</code> target to <code>rustup</code>. That can be done with the following command:</p>
+<pre><code>rustup target add wasm32-unknown-unknown
+</code></pre>
+<p>After doing this, you'll be able to compile your game to WASM by running</p>
+<pre><code>cargo build --target wasm32-unknown-unknown
+</code></pre>
+<div class="warning">
+If you get an error running cargo build similar to this:
+<pre><code>error: The wasm32-unknown-unknown targets are not supported by default; 
+you may need to enable the "wasm_js" configuration flag.
+Note that enabling the `wasm_js` feature flag alone is insufficient.
+For more information see: https://docs.rs/getrandom/0.3.3/#webassembly-support
+</code></pre>
+<p>Do not despair. This will be fixed in the <a href="./random_numbers.html">Using random numbers</a> chapter.</p>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="running-locally"><a class="header" href="#running-locally">Running locally</a></h1>
+<p>If you want to test behavior for your web build, it's important that you can run it locally. For that, you need to add a <code>runner</code> to execute your WASM code.</p>
+<p>First of all, we need to install that runner, by doing</p>
+<pre><code>cargo install wasm-server-runner
+</code></pre>
+<p>Then, to set it to be the default runner when compiling to wasm, add the following to <code>.cargo/config.toml</code>:</p>
+<pre><code class="language-toml">[target.wasm32-unknown-unknown]
+runner = "wasm-server-runner"
+</code></pre>
+<p>After that, you can locally run your game by doing</p>
+<pre><code>cargo run --target wasm32-unknown-unknown
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="using-random-numbers"><a class="header" href="#using-random-numbers">Using random numbers</a></h1>
+<p>Until now, if you've tried to build your developed game, you might have seen errors about the <code>wasm32-unknown-unknown</code> targets not being supported by default. The reason for that are random numbers.</p>
+<p>When using the <code>rand</code> crate, by default, you won't be able to compile your crate for the web. In order to do that, you'll need to:</p>
+<h2 id="enable-getrandoms-wasm_js-feature"><a class="header" href="#enable-getrandoms-wasm_js-feature">Enable <code>getrandom</code>'s <code>wasm_js</code> feature</a></h2>
+<p><code>getrandom</code> is a dependency of <code>rand</code>. They are the one who control the "backend" of things. In order to be able to use <code>getrandom</code> on WASM, you'll need to enable their <code>wasm_js</code> feature. This can be done by adding, under your <code>[dependencies]</code> in <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml">getrandom = { version = "0.3.3", features = ["wasm_js"] }
+</code></pre>
+<h2 id="compile-with-proper-flags"><a class="header" href="#compile-with-proper-flags">Compile with proper flags</a></h2>
+<p>Besides enabling the <code>wasm_js</code> feature, the project must be compiled with a compiler flag enabled. This can be done by either</p>
+<h3 id="building-your-project-with-the-flags"><a class="header" href="#building-your-project-with-the-flags">Building your project with the flags</a></h3>
+<p>I.e by doing</p>
+<pre><code>RUSTFLAGS='--cfg getrandom_backend="wasm_js"' cargo build
+</code></pre>
+<h3 id="setting-in-your-cargoconfigtoml"><a class="header" href="#setting-in-your-cargoconfigtoml">Setting, in your <code>.cargo/config.toml</code>:</a></h3>
+<pre><code class="language-toml">[build]
+rustflags = ["--cfg", 'getrandom_backend="wasm_js"']
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="setting-a-wasm-profile"><a class="header" href="#setting-a-wasm-profile">Setting a wasm profile</a></h1>
+<p>When compiling for WASM, the requirements are often different than on a regular build. For example, it's much more important that a binary be smaller, so that it can be quickly downloaded and loaded, and the user experiences less latency. For that reason, I'd recommend making a <code>wasm-release</code> profile, that better encapsulates those requirements. In your <code>Cargo.toml</code>, add:</p>
+<pre><code class="language-toml">[profile.wasm-release]
+inherits="release"
+opt-level="z"
+strip="debuginfo"
+lto=true
+codegen-units=1
+</code></pre>
+<p>This will make for the most-optimized smallest binary you can have, allowing for a better experience for your players.</p>
+<p>To compile, now, use:</p>
+<pre><code>cargo build --profile wasm-release --target wasm32-unknown-unknown
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="generating-bindings"><a class="header" href="#generating-bindings">Generating bindings</a></h1>
+<p>Regular WASM files can't simply be run by the browser. They need to be properly packaged and called by JavaScript code. In order to build that interface, we use <code>wasm-bindgen</code>:</p>
+<h2 id="installing"><a class="header" href="#installing">Installing</a></h2>
+<pre><code>cargo install wasm-bindgen-cli
+</code></pre>
+<h2 id="running"><a class="header" href="#running">Running</a></h2>
+<pre><code>wasm-bindgen --out-name game \
+    --out-dir wasm_output \
+    --target web \
+    target/wasm32-unknown-unknown/wasm-release/PACKAGE_NAME.wasm 
+</code></pre>
+<p>(remember to replace <code>PACKAGE_NAME</code> with your actual package's name, as in the <code>Cargo.toml</code>)</p>
+<ul>
+<li><code>--out-name</code> specifies the name that the output files should have.</li>
+<li><code>--target web</code> tells it we want to compile to run on the web, in a browser.</li>
+<li><code>--out-dir</code> specifies where to put the generated files. If the <code>wasm_output</code> dir doesn't exist, this will error.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="further-optimizing"><a class="header" href="#further-optimizing">Further optimizing</a></h1>
+<p>Although the compiler can optimize a lot of the WASM for us, <code>wasm-opt</code> can often take it a step further.</p>
+<div class="warning">
+This should be run AFTER `wasm-bindgen`. Otherwise, you will get errors.
+</div>
+<h2 id="installing-1"><a class="header" href="#installing-1">Installing</a></h2>
+<pre><code>cargo install wasm-opt --locked
+</code></pre>
+<h2 id="running-1"><a class="header" href="#running-1">Running</a></h2>
+<pre><code>wasm-opt -Os --output wasm_output/game_bg.wasm wasm_output/game_bg.wasm
+</code></pre>
+<blockquote>
+<p>Note: Replace <code>game</code> with whatever <code>--out-name</code> you passed to <code>wasm-bindgen</code>.</p>
+</blockquote>
+<ul>
+<li><code>-Os</code> means we're optimizing for size</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="window-settings"><a class="header" href="#window-settings">Window Settings</a></h1>
+<p>When creating your window, it's important to set some options in your <code>primary_window</code>:</p>
+<ul>
+<li><code>fit_canvas_to_parent: true</code> -- makes it so the window scales to fill the whole canvas it ocupies, not leaving any borders. However, only this is not enough.</li>
+<li><code>canvas: Some("#bevy")</code> -- makes it so you can create your own canvas that fills the whole provided area. Otherwise, the WASM will create its own canvas that doesn't fill it.</li>
+<li><code>prevent_default_event_handling: false</code> -- this is more optional. It allows you to press <code>esc</code> to exit the fullscreen, for example. If you handle all events properly in your game, you don't need to turn it off.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="creating-an-html-file"><a class="header" href="#creating-an-html-file">Creating an html file</a></h1>
+<p>Although <code>wasm-bindgen</code> made the WASM accessible through the javascript, we still need to initiate it (and create our canvas to put the game in). Itch will load an <code>index.html</code> file you pass to it, which we can leave with the following contents:</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+    &lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="UTF-8" /&gt;
+        &lt;script type="module"&gt;
+            import init from "./game.js";
+            init();
+        &lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;canvas id="bevy"&gt;&lt;/canvas&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Make sure to put the file in the same folder as the outputs from <code>wasm-bindgen</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="deploying"><a class="header" href="#deploying">Deploying</a></h1>
+<p>In order to deploy your game, simply zip the contents of the <code>wasm_output</code> folder (with the <code>index.html</code> file and your <code>assets/</code> folder), and upload it to itch. Yay!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="iterating-faster-a-makefile"><a class="header" href="#iterating-faster-a-makefile">Iterating faster: a Makefile</a></h1>
+<p>In order to make the whole process faster, you can have a <code>Makefile</code> that runs all needed steps in order:</p>
+<pre><code>build:
+    RUSTFLAGS='--cfg getrandom_backend="wasm_js"' cargo build --profile wasm-release --target wasm32-unknown-unknown
+    mkdir -p wasm_output
+    wasm-bindgen --out-name game --target web target/wasm32-unknown-unknown/wasm-release/PROJECT_NAME.wasm --out-dir wasm_output
+    wasm-opt -Os --output wasm_output/game_bg.wasm wasm_output/game_bg.wasm
+    cp -r assets/ wasm_output/assets/
+    echo '''&lt;!DOCTYPE html&gt; \
+        &lt;html lang="en"&gt; \
+        &lt;head&gt; \
+            &lt;meta charset="UTF-8" /&gt; \
+            &lt;script type="module"&gt; \
+                import init from "./game.js"; \
+                init(); \
+            &lt;/script&gt; \
+        &lt;/head&gt; \
+        &lt;body&gt; \
+            &lt;canvas id="bevy"&gt;&lt;/canvas&gt; \
+        &lt;/body&gt; \
+    &lt;/html&gt;''' &gt; wasm_output/index.html
+</code></pre>
+<p>(simply make sure to replace PROJECT_NAME with your actual project's name)</p>
+<p>Now, in order to build your game, run <code>make</code>, and zip the contents of the <code>wasm_output</code> folder.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>
